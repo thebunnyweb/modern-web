@@ -15,11 +15,11 @@ module.exports = {
             validate: (issues) => issues.length === 0 ? 'issues is required' : true
           }
     ],
-    commit({answers, gitInfo}) { 
+    commitMessage({answers, gitInfo}) { 
 
     console.log(answers, gitInfo)
         
     const scope = answers.scope ? `(${answers.scope})` : '';
-      return `OPTIMUSBOT-2: feat${answers.scope}\nSome extra information that helps to clarify the commit message.`
+    return `OPTIMUSBOT-2: feat:${scope}\nSome extra information that helps to clarify the commit message.`
     }
   }
