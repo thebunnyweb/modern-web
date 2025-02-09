@@ -1,25 +1,26 @@
 module.exports = {
-    questions: [
+    questions({inquirer, gitInfo}) {
+      const ui = new inquirer.ui.BottomBar();
+      ui.log.write(`============================`);
+      ui.log.write(`Current Branch is ${gitInfo.branch}`);
+      ui.log.write(`============================`);
+      ui.log.write(``);
+  
+      return [
         {
-            type: 'input',
-            name: 'scope',
-            message:
-              'What is the scope of this change (e.g. component or file name): (press enter to skip)\n'
-          },
-          {
-            type: 'input',
-            name: 'issues',
-            message: 'Add issue references (e.g. "fix #123", "re #123".):\n',
-            when: answers => answers.isIssueAffected,
-            default: undefined,
-            validate: (issues) => issues.length === 0 ? 'issues is required' : true
-          }
-    ],
+          type: 'input',
+          name: 'input1',
+        },
+        {
+          type: 'input',
+          name: 'input2',
+        },
+      ]
+  
+    },
     commitMessage({answers, gitInfo}) { 
-
-    console.log(answers, gitInfo)
         
-    const scope = answers.scope ? `(${answers.scope})` : '';
-    return `OPTIMUSBOT-2: feat:${scope}\nSome extra information that helps to clarify the commit message.`
+    
+      return `${answers.input1}\n${answers.input2}`
     }
   }
