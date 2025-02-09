@@ -21,6 +21,7 @@
     "cz-cli": "^1.0.0",
     "cz-conventional-changelog-with-jiraid-detection": "^1.0.4",
     "cz-customizable": "^7.4.0",
+    "cz-format-extension": "^0.1.5",
     "eslint": "^9.19.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.18",
@@ -31,7 +32,7 @@
   },
   "config": {
     "commitizen": {
-     "path": "./node_modules/cz-customizable"
+      "path": "./node_modules/cz-format-extension"
     }
   }
 }
