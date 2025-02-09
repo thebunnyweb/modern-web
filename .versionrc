@@ -1,0 +1,16 @@
+{
+  "types": [
+    {"type": "feat", "section": "Features"},
+    {"type": "fix", "section": "Bug Fixes"},
+    {"type": "chore", "hidden": true},
+    {"type": "docs", "hidden": true},
+    {"type": "style", "hidden": true},
+    {"type": "refactor", "hidden": true},
+    {"type": "perf", "hidden": true},
+    {"type": "test", "hidden": true}
+  ],
+  "commitUrlFormat": "https://bitbucket.org/your-org/your-repo/commits/{{hash}}",
+  "compareUrlFormat": "https://bitbucket.org/your-org/your-repo/branches/compare/{{currentTag}}%0D{{previousTag}}",
+  "issueUrlFormat": "https://your-jira-instance.atlassian.net/browse/{{id}}"
+}
+
