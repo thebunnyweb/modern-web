@@ -1,0 +1,25 @@
+# train_rasa.py
+import selectors
+import select
+
+# Patch kqueue bug on macOS Python 3.9
+if isinstance(selectors.DefaultSelector(), selectors.KqueueSelector):
+    original_register = selectors.KqueueSelector.register
+
+    def patched_register(self, fileobj, events, data=None):
+        key = selectors.SelectorKey(fileobj, self._fileobj_lookup(fileobj), events, data)
+        if events & selectors.EVENT_READ:
+            kev = select.kevent(key.fd, select.KQ_FILTER_READ, select.KQ_EV_ADD)
+            self._selector.control([kev], 0)
+        if events & selectors.EVENT_WRITE:
+            kev = select.kevent(key.fd, select.KQ_FILTER_WRITE, select.KQ_EV_ADD)
+            self._selector.control([kev], 0)
+        self._fd_to_key[key.fd] = key
+        return key
+
+    selectors.KqueueSelector.register = patched_register
+
+# Now import and run Rasa train
+import rasa.train
+
+rasa.train.main()
