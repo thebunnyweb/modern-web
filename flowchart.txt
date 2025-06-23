@@ -1,4 +1,4 @@
-flowchart TD
+I'mflowchart TD
   subgraph UI
     A[User opens session] --> B[Request via OAuth proxy]
   end
@@ -73,3 +73,46 @@ sequenceDiagram
     SSEHandler-->>LLMAgent: Feed SSE chunks
     Proxy->>Splunk: Log request & response
     LLMAgent-->>UI: Return final response
+
+
+
+graph LR
+  subgraph Client
+    UI["Vercel UI\nReact + useChat"]
+  end
+
+  subgraph OpenShift
+    OA["OAuth Proxy\nSSO / reverse-proxy auth"]
+  end
+
+  subgraph MCP_Platform
+    FM["FastMCP\nRegistry & Proxy"]
+    RSV["Ranking Service"]
+    VDB["Vector DB\nEmbeddings index"]
+  end
+
+  subgraph Agent_Tools
+    LLM["LLM Agent\nLlama 3.3 / LangChain"]
+    TS["Tool Services\nmarket, calc, analytics…"]
+  end
+
+  subgraph Observability
+    SPL["Splunk\nHEC & Dashboards"]
+  end
+
+  UI -->|1. HTTP request| OA
+  OA -->|2. Inject auth headers| UI
+  UI -->|3. GET /registry| FM
+  FM -->|4. Return schemas| UI
+  UI -->|5. Send schemas + prompt| RSV
+  RSV -->|6. Vector search| VDB
+  VDB --> RSV
+  RSV -->|7. Return top-N tools| UI
+  UI -->|8. Inject tools into prompt| LLM
+  LLM -->|9. Emit CALL_TOOL marker| FM
+  FM -->|10. Validate headers/scopes via OAuth Proxy| OA
+  FM -->|11. Forward valid calls| TS
+  TS -->|12. Stream SSE chunks| FM
+  FM -->|13. Forward SSE to agent| LLM
+  FM -->|14. Log events| SPL
+  LLM -->|15. Return final response| UI
