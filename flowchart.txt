@@ -1,4 +1,4 @@
-I'mflowchart TD
+I'mI'mflowchart TD
   subgraph UI
     A[User opens session] --> B[Request via OAuth proxy]
   end
@@ -147,3 +147,34 @@ mindmap
     Logging
       Structured logs
       Splunk HEC & Dashboards
+
+
+
+journey
+    title MCP-Enabled Chat User Journey
+    section Initiation
+      Open Chat UI: 5: User
+    section Authentication
+      Redirect to OAuth Proxy: 3: System
+      Validate session token: 4: System
+      Inject auth headers: 2: System
+    section Query Input
+      Enter question: 5: User
+    section Tool Discovery
+      Fetch registry schemas: 3: System
+      Receive all schemas: 4: System
+      Rank schemas by relevance: 5: System
+      Select top N tools: 2: System
+    section Prompt Assembly
+      Inject tool schemas into prompt: 3: System
+    section Tool Invocation
+      LLM emits CALL_TOOL marker: 4: System
+      Proxy validates scopes: 3: System
+      Invoke tool service: 5: System
+      Stream SSE response: 6: System
+    section Response Rendering
+      Handler feeds chunks to LLM: 4: System
+      LLM continues reasoning: 3: System
+      Render final answer in UI: 5: System
+    section Observability
+      Log events to Splunk: 2: System
