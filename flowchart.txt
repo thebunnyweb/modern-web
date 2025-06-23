@@ -116,3 +116,34 @@ graph LR
   FM -->|13. Forward SSE to agent| LLM
   FM -->|14. Log events| SPL
   LLM -->|15. Return final response| UI
+
+
+mindmap
+  root((MCP System))
+    Client
+      Vercel UI
+      useChat hook
+    Auth
+      OpenShift OAuth Proxy
+      Injects headers (user, scopes)
+    Discovery
+      FastMCP Registry
+      Returns all tool schemas
+    Ranking
+      Embeddings & Vector DB
+      Ranking Service
+      Select top-N tools
+    Prompt
+      Inject selected schemas
+      LLM system prompt
+    Invocation
+      CALL_TOOL marker
+      MCP Proxy
+      Validate scopes
+      Forward to Tool Services
+    Streaming
+      SSE streaming
+      LangChain SSE handler
+    Logging
+      Structured logs
+      Splunk HEC & Dashboards
