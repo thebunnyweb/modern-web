@@ -45,3 +45,31 @@ flowchart TD
   end
 
   R --> T[LLM continues reasoning]
+
+
+sequenceDiagram
+    participant UI as User_UI
+    participant OAuthProxy as OAuth_Proxy
+    participant Registry as FastMCP_Registry
+    participant RankSvc as Ranking_Service
+    participant LLMAgent as LLM_Agent
+    participant Proxy as MCP_Proxy
+    participant ToolSvc as Tool_Service
+    participant SSEHandler as SSE_Handler
+    participant Splunk as Splunk
+
+    UI->>OAuthProxy: HTTP request
+    OAuthProxy-->>UI: Inject auth headers
+    UI->>Registry: GET /registry
+    Registry-->>UI: Return tool schemas
+    UI->>RankSvc: Send schemas + prompt
+    RankSvc-->>UI: Return top N tools
+    UI->>LLMAgent: Inject prompt with selected schemas
+    LLMAgent->>Proxy: Emit CALL_TOOL marker
+    Proxy->>Proxy: Validate auth headers & scopes
+    Proxy->>ToolSvc: REST call /mcp/tools/{name}
+    ToolSvc-->>Proxy: Stream SSE chunks
+    Proxy->>SSEHandler: Forward chunks
+    SSEHandler-->>LLMAgent: Feed SSE chunks
+    Proxy->>Splunk: Log request & response
+    LLMAgent-->>UI: Return final response
