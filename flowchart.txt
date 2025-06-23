@@ -1,0 +1,47 @@
+flowchart TD
+  subgraph UI
+    A[User opens session] --> B[Request via OAuth proxy]
+  end
+
+  subgraph Auth
+    B --> C[Proxy validates token]
+    C --> D[Proxy injects auth headers]
+  end
+
+  subgraph Registry_Discovery
+    D --> E[Call /registry endpoint]
+    E --> F[Return tool schemas]
+  end
+
+  subgraph Retrieval_Ranking
+    F --> G[Vectorize schemas]
+    G --> H[Rank by relevance]
+    H --> I[Select top N tools]
+  end
+
+  subgraph Prompt_Injection
+    I --> J[Inject schemas into LLM prompt]
+  end
+
+  subgraph LLM_Agent
+    J --> K[LLM generates CALL_TOOL marker]
+  end
+
+  subgraph Invocation
+    K --> L[Parse CALL_TOOL]
+    L --> M[REST call to /mcp/tools/name]
+    M --> N{Validate scopes}
+    N -->|OK| O[Forward to tool]
+    N -->|Error| P[Return auth error]
+  end
+
+  subgraph Streaming_Response
+    O --> Q[Tool streams SSE]
+    Q --> R[Handler feeds chunks to LLM]
+  end
+
+  subgraph Logging
+    O & P & Q --> S[Send logs to Splunk]
+  end
+
+  R --> T[LLM continues reasoning]
