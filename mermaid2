@@ -1,0 +1,69 @@
+graph TD
+    %% style helpers
+    classDef ui fill:#e8f5e9,stroke:#43a047,stroke-width:1;
+    classDef svc fill:#e3f2fd,stroke:#1e88e5,stroke-width:1;
+    classDef data fill:#fff3e0,stroke:#fb8c00,stroke-width:1;
+    classDef infra fill:#f3e5f5,stroke:#8e24aa,stroke-width:1;
+
+    %% nodes
+    React["React JS UI"]:::ui
+    Ingress["OpenShift<br/>Route / Ingress"]:::infra
+    CoreSvc["Service: rasa-core"]:::svc
+    CorePods["Rasa Core Pods<br/>(16 bots × 2 replicas)"]:::svc
+    ActionPods["Rasa Action Pods<br/>(16 bots × 2 replicas)"]:::svc
+    Mongo["MongoDB Tracker Store"]:::data
+    Kafka["Kafka (monitoring)"]:::infra
+
+    %% edges
+    React -- "Socket.IO (WebSocket)" --> Ingress
+    Ingress --> CoreSvc
+    CoreSvc --> CorePods
+    CorePods -- "HTTP / JSON" --> ActionPods
+    CorePods -- "tracker events" --> Mongo
+    CorePods -- "metrics / logs" --> Kafka
+
+
+
+flowchart TD
+    classDef pod fill:#e3f2fd,stroke:#1e88e5,stroke-width:1;
+    classDef store fill:#fff3e0,stroke:#fb8c00,stroke-width:1;
+    classDef infra fill:#f3e5f5,stroke:#8e24aa,stroke-width:1;
+
+    subgraph "OpenShift Project / Namespace : chatbot"
+        direction TB
+
+        %% cluster pool (6 physical / logical clusters in the same project)
+        subgraph "Cluster Pool (6 clusters)"
+            direction LR
+            CorePods["Rasa Core<br/>32 pods<br/>500 m CPU / 2 Gi"]:::pod
+            ActionPods["Rasa Action<br/>32 pods<br/>500 m CPU / 2 Gi"]:::pod
+        end
+
+        MongoRS["MongoDB ReplicaSet"]:::store
+        KafkaBrokers["Kafka Brokers<br/>(3 nodes)"]:::infra
+        Ingress["Routes / Ingress Controllers"]:::infra
+    end
+
+    CorePods -- "tracker writes" --> MongoRS
+    CorePods -- "event stream" --> KafkaBrokers
+    CorePods -- "HTTP calls" --> ActionPods
+    Ingress --> CorePods
+
+
+journey
+    title  Rasa-powered Chat – End-to-End User Journey
+    section Onboarding
+      User opens product page / chat panel        : 5: User,React UI
+      Socket.IO handshake established             : 4: React UI,Rasa Core
+    section Conversation Loop
+      User sends a message                        : 5: User,React UI
+      Message received by Rasa Core (bot N)       : 4: Rasa Core
+      Core queries Mongo tracker for context      : 3: Rasa Core,MongoDB
+      Core invokes Action Server if needed        : 3: Rasa Core,Rasa Action
+      Action Server fetches / computes result     : 4: Rasa Action
+      Bot response emitted over Socket.IO         : 4: Rasa Core,React UI
+      User reads reply & continues                : 5: User
+    section Observability (background)
+      Tracker event persisted                     : 3: MongoDB
+      Metrics / logs streamed to Kafka            : 3: Rasa Core,Kafka
+
