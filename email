@@ -1,0 +1,18 @@
+Unfortunately, due to recent restrictions imposed by MRM, we are no longer permitted to add new multibots into production under the blanket approval provided by the Optimus framework. This change affects all teams leveraging Optimus for bot deployment and will impact your current rollout plans.
+
+To proceed, you now have the following three options:
+
+1. Obtain Dedicated MRM Approval:
+You may choose to initiate and secure a standalone MRM approval for your specific bot. Once approved, we will be able to onboard and deploy your bot to production via the Optimus UI without further blockers.
+
+
+2. Merge with an Existing Approved Multibot:
+If applicable, you can integrate your bot into one of the existing approved multibots (e.g., Credit, Mortgages, or another relevant domain). This path allows you to bypass new MRM approval while remaining under an already validated scope.
+
+
+3. Implement a Non-Rasa Technology Path:
+As an alternative, we can assist in setting up a rule-based mapping layer that operates independently of the Rasa AI stack. This approach avoids MRM dependency and we can guide you through the implementation process in your system.
+
+
+
+We understand this is an unfortunate situation and appreciate the potential disruption. That said, these are the only compliant paths forward at this time. Please let us know how you'd like to proceed so we can provide the necessary support.
