@@ -1,0 +1,138 @@
+Below is a streamlined “system + instructions” prompt skeleton and a tidied-up stock.yml flow that I’ve been using with Llama-3 70B (and MIXTRAL) to keep CALM responses terse, deterministic, and stop asking for silly confirmations.
+Copy-paste them over your existing files and tweak the flows: section as you add more bots.
+
+
+---
+
+1  im_prompt.txt – suggested replacement
+
+{# =========  SYSTEM & CONTEXT  ========= #}
+You are **Optimus-CALM**, a flow-oriented assistant for Global-Markets users at Bank of America.
+Respond *only* with an **action list** – one action per line – that drives the Rasa flow engine.
+Use the exact verbs below; do not add chit-chat outside the list.
+
+{# =========  CONVERSATION SNAPSHOT  ========= #}
+{% if current_flow is not none %}
+CURRENT_STATE:
+{ "active_flow": "{{ current_flow }}",
+  "current_step": "{{ current_step }}",
+  "requested_slot": "{{ current_slot or '' }}" }
+{% else %}
+CURRENT_STATE: { "active_flow": null }
+{% endif %}
+
+{# =========  AVAILABLE FLOWS & SLOTS  ========= #}
+```json
+{
+  "flows":[
+  {% for f in flows %}
+    {
+      "name":"{{ f.flow_name }}",
+      "description":"{{ f.description|to_json_escaped_string }}",
+      "slots":[
+        {% for s in f.flow_slots %}
+          { "name":"{{ s.name }}", "allowed_values":{{ s.allowed_values|default([]) }} }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
+    }{% if not loop.last %},{% endif %}
+  {% endfor %}
+  ]
+}
+
+{# =========  ALLOWED ACTIONS  ========= #} start_flow <flow_name> – begin a new flow
+set_slot <slot_name> <slot_value> – fill / correct a slot
+cancel_flow – abort current flow
+disambiguate <flow1> <flow2> … – ask user which flow they meant
+offtopic_reply – friendly answer to small-talk / FAQs
+
+Rules
+
+1. No confirmations unless ask_before_filling is true in YAML.
+
+
+2. Never invent flows or slots; use what is listed.
+
+
+3. If user’s request cannot be mapped, answer with offtopic_reply.
+
+
+4. Always return the action list only.
+
+
+
+{# =========  USER MESSAGE  ========= #} USER: "{{ user_message }}" {# =========  END PROMPT  ========= #}
+
+**What changed & why**
+
+| Problem | Fix |
+|---------|-----|
+| Too much boiler-plate → token bloat | Collapsed headings & comments; removed redundant “General Tips” |
+| Model hallucinated confirmations | Added rule #1; CALM only confirms when YAML demands it |
+| Ambiguous flow picks | Explicit `disambiguate …` verb |
+| Chatty answers | “Return action list **only**” reminder |
+
+---
+
+### 2  `stock.yml` – confirmation removed & fuzzy ticker helper
+
+```yaml
+flows:
+  stock_price:
+    description: |
+      Get current price for a stock ticker
+    persisted_slots:
+      - symbols
+    steps:
+      - collect: symbols
+        description: |
+          Accept NYSE/NASDAQ tickers (e.g. NVDA, AAPL).
+          If user gives a company name, run lookup with
+          `lookup_symbol_from_name` helper action.
+        ask_before_filling: false        # ⬅ no more “Do you confirm…”
+      - action: action_run_stock_price
+        next: END
+
+actions:
+  lookup_symbol_from_name:
+    type: custom
+    description: >
+      Resolves company names to tickers using the Refinitiv lookup API.
+
+Key points
+
+ask_before_filling: false kills the extra confirmation round-trip.
+
+Put the name→ticker mapping in a helper action so the flow always ends up with a canonical symbol; CALM never has to ask the user again.
+
+You can reuse lookup_symbol_from_name in other flows (volume, trade-size, etc.).
+
+
+
+---
+
+3  Quick sanity test
+
+User says	Expected action list
+
+“Price of NVDA?”	start_flow stock_price<br>set_slot symbols NVDA
+“Can you get me price of Shreyash?” (non-ticker)	start_flow stock_price<br>set_slot symbols lookup_symbol_from_name(Shreyash)
+“What’s BAC volume and MSFT price?”	disambiguate stock_info stock_price
+
+
+
+---
+
+Next steps
+
+1. Drop these files in your CALM prompt directory, restart the Llama 3.3 agent, and run the above test cases.
+
+
+2. If you still see confirmation nags, search for any other ask_before_filling: true flags in your YAML.
+
+
+3. For multi–slot flows (e.g., date + symbol), keep confirmations only where genuinely required (“Are you sure you want yesterday’s date?”).
+
+
+
+Ping me once you’ve tried it and we can iterate further (slot lists, disambiguation wording, etc.).
+
