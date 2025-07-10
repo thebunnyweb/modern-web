@@ -1,0 +1,25 @@
+Got it! Here's the updated paragraph:
+
+
+---
+
+So far this year, I've accomplished quite a bit, particularly in the realm of AI and UX strategy. I secured the AI Council approval for the Optimus CALM project and collaborated with various teams to get the LLM infrastructure ready. I also worked closely with Anup Menon’s AI team on the UX strategy and initial design for our GenAI app, DocIntel. Additionally, I implemented a new UI registry framework for all our GenAI products and new apps under Global Markets to enhance UI/UX. I created a GenAI sandbox tool for interacting with LLMs and worked on the MCP registry implementation, coordinating with the Glass and QSDG teams for the Optimus CALM model. I also focused on building and implementing a virtual team around GenAI for Optimus CALM federated development, as well as working with a virtual team on MCP server development. Lastly, I contributed to the implementation of live agent functionality, bringing it close to MVP sign-off, and integrated MCP servers for various vendor tools.
+
+Absolutely, here's the final addition to the paragraph:
+
+
+---
+
+In addition to these achievements, I also focused on team management, sharing knowledge and mentoring team members to ensure that all deliveries were achieved in a timely manner, even when capacity was low. I made sure to navigate and delegate tasks effectively while maintaining PRDs efficiently.
+
+
+---
+
+Let me know if that works for you!
+
+
+
+---
+
+Let me know if that sounds good or if you'd like any more changes!
+
