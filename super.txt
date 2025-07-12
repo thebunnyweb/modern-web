@@ -1,0 +1,24 @@
+Here’s a polished version of your email:
+
+
+---
+
+Subject: M UAT Lock & MRM Preparation Update
+
+Hi Team,
+
+The UAT version for s CALM has been locked, and no further development will be performed on this build until the MM evaluation is complete.
+
+QSG has confirmed that the model is behaving as expected, and we are treating this version as final for the upcoming review.
+
+Additionally, the infrastructure team has been notified about the MRM exercise scheduled for next week to ensure model availability during the evaluation window.
+
+The Optimus Core team will now manually execute all test cases to validate and rule out any false positives. Please note this is a one-time activity, and we are targeting completion by Monday.
+
+Let us know if you have any question.
+
+
+---
+
+Let me know if you'd like a version with more authority, technical details, or internal tone.
+
