@@ -1,0 +1,35 @@
+Perfect — thanks for the clarification!
+
+Since you're using Tableau for reporting and MongoDB as the tracker store (most likely Rasa’s conversation tracker), here's a sharp, accurate response tailored for your setup:
+
+
+---
+
+Response:
+
+Usage and consumption for the Rasa application are tracked using the following methods and sources:
+
+1. MongoDB Tracker Store: All user interactions and session data are stored in a MongoDB tracker store. This includes metadata on which users accessed the system, their activity, and timestamps, which helps determine active usage across environments.
+
+
+2. Tableau Reporting: Usage metrics are visualized and monitored via Tableau dashboards, which pull data from the MongoDB tracker store. These dashboards provide insight into license consumption, user activity trends, and environment-level deployment metrics.
+
+
+3. Access Control via Horizon: Only authorized users with Horizon access can deploy or interact with the Rasa platform in staging or production, adding an additional layer of control on who contributes to usage.
+
+
+4. Vault for Credential Management: User-level access to secrets required to run the application is managed through Vault, which ensures only entitled users are able to run workloads or interact with production-grade deployments.
+
+
+5. Entitlements and USDG: Entitlements for Rasa are not currently stored in USDG. They are managed internally based on license provisioning and tracked via Tableau and Vault access logs.
+
+
+6. Active Directory: AD groups are not used for Rasa access at this time.
+
+
+
+
+---
+
+Let me know if AD or USDG gets added later — I’ll help you update the wording accordingly.
+
