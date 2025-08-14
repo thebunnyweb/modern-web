@@ -1,4 +1,4 @@
-Here’s a polished, immigration-ready set of answers you can paste into the HR form. I’ve kept it factual, specific, and framed to avoid RFEs by emphasizing (1) a rare combination of skills, (2) scale and measurable scope, (3) proprietary/institutional knowledge in a regulated environment, and (4) clear, ongoing business necessity.
+I'mHere’s a polished, immigration-ready set of answers you can paste into the HR form. I’ve kept it factual, specific, and framed to avoid RFEs by emphasizing (1) a rare combination of skills, (2) scale and measurable scope, (3) proprietary/institutional knowledge in a regulated environment, and (4) clear, ongoing business necessity.
 
 1) What is the unique and critical skill set or combination of skills that this employee possesses?
 
@@ -121,4 +121,16 @@ Drives cross-functional alignment (Dev, QA, Risk, Infra, Vendors), mentors engin
 
 
 If you want an attachment-ready one-page “Business Necessity & Impact” summary (metrics, org snippet, release cadence, governance checklist), say the word and I’ll draft it now.
+
+
+
+Prior experience:
+The employee has ~7 years of progressive responsibility at a Fortune-100 U.S. financial institution, advancing from Assistant Vice President to Vice President, Feature Lead Technology. He leads an enterprise conversational-AI platform (“Optimus”) that serves ~2,000+ internal users, handles ~15,000 queries per month, and integrates ~60 internal systems across 18 lines of business. His background spans full-stack engineering, platform architecture, and delivery in a regulated environment, with direct engagement across trading, operations, risk, and production support teams.
+
+Niche skill set:
+React/TypeScript (shadcn), Vercel AI SDK, Python; Rasa Pro/CALM guardrails, LLMs, LangChain, LangGraph, MCP tool calling, RAG/retrieval, Vector DB; WebSocket streaming; OpenShift/Kubernetes, Jenkins CI/CD, observability/telemetry; secure integrations, identity, auditability, and model-risk governance for financial services.
+
+Role responsibilities:
+The employee is responsible for architecting, leading, and operating the bank’s enterprise conversational-AI platform that consolidates multi-bot automation and knowledge access into a single, governed interface. The platform ingests and indexes content from diverse knowledge sources and connects to ~60 applications/services to execute tasks and surface real-time information. It supports traders and operations for trade booking support, incident management, bond reference-data loads, and other workflow automations, with live-agent escalation relied upon by production-support teams. He manages 14 engineers, owns release trains, SLOs, and incident playbooks; implements safety rails, audit trails, and human-in-the-loop controls; and ensures compliant delivery across 18 LOBs. These capabilities are business-critical for internal productivity, operational resilience, and risk/compliance obligations.
+
 
