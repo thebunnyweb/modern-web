@@ -145,3 +145,37 @@ def to_mongo_doc(d: dict) -> MongoDoc:
         paused=_to_bool(d.get("paused"), False),
         slots=_as_dict(d.get("slots")),
     )
+
+
+
+
+@strawberry.type
+class Query:
+    @strawberry.field
+    async def documents(
+        self,
+        filter: JSON = strawberry.UNSET,          # arbitrary Mongo filter
+        limit: int = 10,
+        skip: int = 0,
+        sort: Optional[List[SortInput]] = None,
+    ) -> list[MongoDoc]:
+        # clamp limit to protect DB
+        MAX_LIMIT = 200
+        lim = max(1, min(limit, MAX_LIMIT))
+
+        # build filter
+        mongo_filter = filter or {}
+        if mongo_filter is strawberry.UNSET:
+            mongo_filter = {}
+
+        # optional: sanitize to prevent bad fields/operators
+        mongo_filter = sanitize_filter(mongo_filter)
+
+        # build sort
+        sort_spec = []
+        for s in (sort or []):
+            dir_ = 1 if s.direction >= 0 else -1
+            sort_spec.append((s.field, dir_))
+
+        docs = await get_documents(filters=mongo_filter, limit=lim, skip=skip, sort=sort_spec)
+        return [to_mongo_doc(d) for d in docs]
