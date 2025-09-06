@@ -1,0 +1,25 @@
+I have Python dataclasses / models that are used with Strawberry GraphQL and MongoDB. 
+Some of my fields are typed as `Any`, `Optional[Any]`, `Dict[str, Any]`, or other unsupported types. 
+When I build the schema, Strawberry/GraphQL throws errors like "fields cannot be resolved. Unexpected type dict[str, typing.Any]".
+
+Your task:
+- Go through all my model classes (e.g., MongoDoc, Event, Intent, etc.).
+- Replace **Any** or **Dict[...]** with GraphQL-safe equivalents:
+   - If the field is a free-form JSON/dynamic object, use `strawberry.JSON`.
+   - If the field has a known shape, define a new `@strawberry.type` and reference it.
+   - If it’s an optional free-form blob, use `Optional[strawberry.JSON]`.
+- Ensure the output works with Strawberry schema generation (no unsupported types).
+- Keep my existing structure, just make the GraphQL schema valid.
+- Provide the corrected full code for my classes.
+
+Example:
+```python
+from typing import Optional, List
+import strawberry
+
+@strawberry.type
+class Event:
+    event: str
+    timestamp: float
+    metadata: Optional[strawberry.JSON]   # instead of Optional[Any]
+    policy: Optional[strawberry.JSON]     # instead of Optional[Any]
