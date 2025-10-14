@@ -1,0 +1,141 @@
+Here’s a professional technical email draft you can send to your team or management explaining the switch clearly and persuasively:
+
+
+---
+
+Subject: Transition from FAISS-based Retrieval to Rasa Core’s model_encode Approach for Intent Classification
+
+
+---
+
+Hi Team,
+
+As part of our ongoing effort to optimize NLU performance and reduce latency in our text classification pipeline, we are moving away from the current FAISS-based retrieval setup and adopting Rasa Core’s internal model_encode + Logistic Regression classifier approach.
+
+Below is a quick overview of the reasoning, technical details, and expected improvements.
+
+
+---
+
+🔍 Current Setup: FAISS-Based Semantic Retrieval
+
+Our current architecture uses SentenceTransformers + FAISS:
+
+1. Each query is embedded using a MiniLM or SentenceTransformer model.
+
+
+2. The embedding is compared against a large FAISS index of pre-encoded training samples.
+
+
+3. The system retrieves the most similar embeddings (via cosine similarity) and infers the intent or label.
+
+
+
+Issues identified:
+
+Average latency: 4–6 seconds per query on CPU (even with cached model).
+
+Scaling bottleneck as corpus size increases (O(n) comparisons or ANN search overhead).
+
+Inconsistent results due to approximate nearest-neighbor variations.
+
+High memory footprint for large FAISS indices.
+
+
+
+---
+
+⚙️ New Approach: Rasa Core’s model_encode + Logistic Regression
+
+Rasa internally handles the same semantic encoding process but replaces the vector search step with a lightweight, closed-set classifier:
+
+1. LanguageModelFeaturizer (MiniLM-L2-v6) → converts text into a dense vector once (“forward pass”).
+
+
+2. LogisticRegressionClassifier → directly maps that embedding to one of N known intents using a small learned weight matrix.
+
+
+
+At runtime, this means:
+
+Only one MiniLM forward pass (no index search).
+
+One matrix multiplication + softmax → immediate intent probabilities.
+
+
+Expected outcome:
+
+Average latency: <200 ms per query (CPU).
+
+Performance independent of training set size (O(1) inference).
+
+Significantly smaller runtime footprint (no FAISS index).
+
+Easier maintainability and reproducibility (native Rasa model format).
+
+
+
+---
+
+📈 Impact
+
+Metric	FAISS Retrieval	Rasa model_encode
+
+Inference latency	~5–6 sec	~0.1–0.2 sec
+Complexity	O(n)	O(1)
+Model footprint	Large FAISS index	Compact .tar.gz model
+Scaling	Slows with corpus	Constant-time
+Maintenance	External scripts	Native Rasa support
+
+
+
+---
+
+🧩 Migration Steps
+
+1. Convert existing CSV training data (text, label) → nlu.yml format using a simple converter.
+
+
+2. Train Rasa NLU using a MiniLM + Logistic Regression pipeline.
+
+
+3. Deploy the NLU-only Rasa service (rasa run --enable-api) as a lightweight classifier endpoint.
+
+
+4. Deprecate FAISS retrieval calls except for fallback / open-ended similarity use cases.
+
+
+
+
+---
+
+🚀 Next Actions
+
+[ ] Migrate training data to Rasa NLU format.
+
+[ ] Train and benchmark the new model on representative datasets.
+
+[ ] Roll out NLU endpoint and measure real-time performance vs FAISS baseline.
+
+[ ] Retain FAISS for semantic search (FAQ / fallback), not intent classification.
+
+
+
+---
+
+Summary:
+This change replaces approximate vector search with a trained, deterministic classifier built on Rasa’s optimized model_encode pipeline. It eliminates multi-second latency, simplifies deployment, and scales predictably with minimal maintenance overhead.
+
+
+---
+
+Regards,
+Harsh Shah
+Feature Lead – Optimus NLU Platform
+Bank of America
+
+
+---
+
+Would you like me to make a shorter version of this (1-paragraph executive summary) you can CC to your manager or architecture council?
+
